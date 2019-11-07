@@ -1,3 +1,3 @@
-## 0.0.1
+## 1.0.0
++ JMLink flutter plugin v1.0.0
 
-* TODO: Describe initial release.
