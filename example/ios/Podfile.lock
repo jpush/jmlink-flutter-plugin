@@ -1,0 +1,38 @@
+PODS:
+  - Flutter (1.0.0)
+  - JCore (2.1.4)
+  - JMessage (3.9.1):
+    - JCore (< 3.0.0, >= 2.0.0)
+  - JMLink (1.0.0):
+    - JCore (< 3.0.0, >= 2.1.0)
+  - jmlink_flutter_plugin (0.0.1):
+    - Flutter
+    - JMLink (= 1.0.0)
+
+DEPENDENCIES:
+  - Flutter (from `.symlinks/flutter/ios`)
+  - JMessage (= 3.9.1)
+  - jmlink_flutter_plugin (from `.symlinks/plugins/jmlink_flutter_plugin/ios`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - JCore
+    - JMessage
+    - JMLink
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: ".symlinks/flutter/ios"
+  jmlink_flutter_plugin:
+    :path: ".symlinks/plugins/jmlink_flutter_plugin/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  JCore: d345c049141877eb61c33011455fdb5fcab1673f
+  JMessage: 43dfcd5348573b2f4f24357b12e9b19076322606
+  JMLink: e09c177c7ac771b8fc4f5f4269b3adf6e8871418
+  jmlink_flutter_plugin: 056d1c2d430e4b990baa4004ecef7e79bd387431
+
+PODFILE CHECKSUM: d4f056f113b16d374f3951c8b4416d5b71980cd7
+
+COCOAPODS: 1.7.0.beta.2
