@@ -14,14 +14,14 @@ class JMLEventHandlers {
 
 
   List<JMLDefaultHandlerListener> defaultHandlerEvents = [];
-  Map<String, JMLHandlerListener> handlerMap = Map();
+  Map<String, List<JMLHandlerListener>> handlerMap = Map();
 }
 
 
 
 class JmlinkFlutterPlugin {
 
-  final String flutter_log = "| JML | Flutter | - ";
+  final String flutterLog = "| JML | Flutter | - ";
 
   static const String jmlink_handler_key  = "jmlink_handler_key";
   static const String jmlink_getParam_key = "jmlink_getParam_key";
@@ -60,12 +60,17 @@ class JmlinkFlutterPlugin {
   /// @para jmlinkKey 需要监听的短链
   /// 在监听回调里，根据返回的参数做相应的操作，如：跳转页面
   addHandlerListener(String jmlinkKey, JMLHandlerListener callback) {
-    _eventHanders.handlerMap[jmlinkKey] = callback;
+
+    List<JMLHandlerListener> list = _eventHanders.handlerMap[jmlinkKey];
+    if (list == null) {
+      list = [];
+    }
+    list.add(callback);
+    _eventHanders.handlerMap[jmlinkKey] = list;
   }
 
-
   Future<void> _handlerMethod(MethodCall call) async {
-    print("handleMethod method = ${call.method}");
+    print(flutterLog + "handleMethod method = ${call.method}");
     switch (call.method) {
       case 'onReceiveJMLinkDefaultHandler': {
         for (JMLDefaultHandlerListener cb in _eventHanders.defaultHandlerEvents) {
@@ -80,8 +85,10 @@ class JmlinkFlutterPlugin {
         bool isContains = _eventHanders.handlerMap.containsKey(jmlink_key);
         if (isContains) {
           jsonMap.remove(jmlink_handler_key);
-          JMLHandlerListener cb = _eventHanders.handlerMap[jmlink_key];
-          cb(jmlink_key,jsonMap);
+          List<JMLHandlerListener> list = _eventHanders.handlerMap[jmlink_key];
+          for (JMLHandlerListener cb in list) {
+            cb(jmlink_key,jsonMap);
+          }
         }
       }
       break;
@@ -93,21 +100,21 @@ class JmlinkFlutterPlugin {
 
   /// 初始换 SDK
   void setup({@required JMLConfig config}) {
-    print(flutter_log + "setup");
+    print(flutterLog + "setup");
     _methodChannel.setMethodCallHandler(_handlerMethod);
     _methodChannel.invokeMethod("setup",config.toMap());
   }
 
   /// 设置 SDK 是否 debug 模式
   void setDebugMode({@required bool debug}) {
-    print(flutter_log + "setDebugMode");
+    print(flutterLog + "setDebugMode");
     _methodChannel.invokeMethod("setDebugMode",{"debug":debug});
   }
 
   /// 注册一个默认的 mLink handler，当接收到URL，并且所有的 mLink key 都没有匹配成功，就会调用默认的 mLink handler
   /// handler mlink 的回调通过 addDefaultHandlerListener 来监听
   void registerJMLinkDefaultHandler() {
-    print(flutter_log + "registerJMLinkDefaultHandler");
+    print(flutterLog + "registerJMLinkDefaultHandler");
     _methodChannel.invokeMethod("registerJMLinkDefaultHandler");
   }
 
@@ -115,9 +122,9 @@ class JmlinkFlutterPlugin {
   /// @param key 后台注册mlink时生成的mlink key
   /// handler mlink 的回调通过 addHandlerListener 来监听
   void registerJMLinkHandler({@required String key}) {
-    print(flutter_log + "registerJMLinkHandler: key=$key");
+    print(flutterLog + "registerJMLinkHandler: key=$key");
     if (key == null) {
-      print(flutter_log + "mlink key can not be nil");
+      print(flutterLog + "mlink key can not be nil");
       return ;
     }
      _methodChannel.invokeMethod("registerJMLinkHandler",{jmlink_handler_key:key});
@@ -126,7 +133,7 @@ class JmlinkFlutterPlugin {
   /// 获取无码邀请中传回来的相关值
   /// return 无码邀请中传回来的相关值
   Future<Map> getJMLinkParam() async {
-    print(flutter_log + "getJMLinkParam");
+    print(flutterLog + "getJMLinkParam");
 
     Map map = await _methodChannel.invokeMethod("getJMLinkParam");
     return map;

@@ -1,5 +1,14 @@
-## 1.0.0
-+ JMLink flutter plugin v1.0.0
+## 1.0.3
++ 修改用户反馈 bug
++ 修复 iOS 端 APP 杀进程再通过短链唤起无法获取参数问题；
++ 修复 iOS 端未添加 s.static_framework = true 导致打包失败问题；
++ 修复 Android 端在后台被唤起时无法获取参数问题。
+## 1.0.2
++ 修改用户反馈 bug
 
 ## 1.0.1
 + 修改文档
+
+## 1.0.0
++ JMLink flutter plugin v1.0.0
+

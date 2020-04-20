@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:jmlink_flutter_plugin/jmlink_flutter_plugin.dart';
 
 void main() => runApp(MyApp());
@@ -16,9 +15,9 @@ class _MyAppState extends State<MyApp> {
   final JmlinkFlutterPlugin jmlink = new JmlinkFlutterPlugin();
 
 
-  String _paramString = "";
-  String _defaultMlinkMapString = "";
-  String _milinkMapString = "";
+  String _paramString = "param";
+  String _defaultMlinkMapString = "default handler";
+  String _milinkMapString = "key handler";
 
   @override
   void initState() {
@@ -64,7 +63,7 @@ class _MyAppState extends State<MyApp> {
   // 注册短链对应的 handler
   _registerJMLinkHandler() {
     // 监听 某个短链 mLink handler 回调
-    String jmlinkKey = "jmessage_key1";// 短链 key
+    String jmlinkKey = "jm_key1";// 短链 key
     jmlink.addHandlerListener(jmlinkKey, (String key, Map jsonMap){
       if (jmlinkKey == key) {
         print("监听到短链为【$jmlinkKey】的 mLink handler 回调，回调参数为：${jsonMap.toString()}");

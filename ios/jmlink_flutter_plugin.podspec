@@ -8,14 +8,17 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 A new Flutter plugin.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://www.jiguang.cn'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'xudong.rao' => 'xudong.rao@outlook.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
   s.dependency 'JMLink', '1.0.0'
+
+  # 使用 use_frameworks!，
+  s.static_framework = true
 
   s.ios.deployment_target = '8.0'
 end

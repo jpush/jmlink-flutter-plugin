@@ -9,12 +9,12 @@
 ```yaml
 //pub 集成
 dependencies:
-  jmlink_flutter_plugin: 1.0.1
+  jmlink_flutter_plugin: 1.0.3
 
   
 //github 集成  
 dependencies:
-  jverify:
+  jmlink_flutter_plugin:
     git:
       url: git://github.com/jpush/jmlink-flutter-plugin.git
       ref: master
@@ -23,7 +23,7 @@ dependencies:
 
 ##### Android:
 
-在 `/android/app/build.gradle` 中添加下列代码：
++ 在 `/android/app/build.gradle` 中添加下列代码：
 
 ```groovy
 android: {
@@ -40,34 +40,61 @@ android: {
         JPUSH_PKGNAME : applicationId,
         JPUSH_APPKEY : "appkey", // NOTE: JPush 上注册的包名对应的 Appkey.
         JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+        JMLINK_SCHEME: "you scheme",//  设置跳转的scheme
     ]
   }    
 }
 ```
 
-在 `/android/app/src/main/AndroidManifest.xml` 中配置 scheme
++ 在 `/android/app/src/main/AndroidManifest.xml` 中配置 scheme
 
 ```
 <!-- 将“你的Scheme”替换为后台填写的URI Scheme。-->
-<activity
-    android:name=".WelcomeActivity">
-    <intent-filter>
-        <data android:scheme="你的Scheme"/>
-        <action android:name="android.intent.action.VIEW" />
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.BROWSABLE" />
-    </intent-filter>
-    <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-    </intent-filter>
-</activity>
 
+<activity android:name=".WelcomeActivity">
+         <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme='${JMLINK_SCHEME}' />
+         </intent-filter>
+</activity>
+```
+
+***注意：***配置完`scheme`之后，必须在 `WelcomeActivity` 的 `onCreate` 方法中执行 `JmlinkFlutterPlugin.setData`方法：
+
+```
+public class WelcomeActivity extends Activity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        Log.d("| WelcomeActivity | - ","onCreate:");
+        super.onCreate(savedInstanceState);
+
+        JmlinkFlutterPlugin.setData(getIntent().getData());
+
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+    //@Override
+
+
+    protected void onDestroy() {
+        Log.d("| WelcomeActivity | - ","onDestroy:");
+        super.onDestroy();
+    }
+    protected void onNewIntent(Intent intent) {
+        Log.d("| WelcomeActivity | - ","onNewIntent:");
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+}
 ```
 
 #### iOS
 
-详细请看（https://docs.jiguang.cn/jmlink/client/iOS/ios_guide/）
+[详细请看](https://docs.jiguang.cn/jmlink/client/iOS/ios_guide/)
 
 - 1.配置App的URL Scheme
 
