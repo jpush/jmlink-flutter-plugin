@@ -1,6 +1,6 @@
 name: jmlink_flutter_plugin
-description: Offically supported JMLink Flutter plugin.
-version: 1.0.1
+description: JIGUANG officially supported JMLink Flutter plugin (Android & iOS). 极光推送官方支持的 Flutter 插件（Android & iOS）。 https://docs.jiguang.cn
+version: 1.0.3
 author: xudong.rao <xudong.rao@outlook.com>
 homepage: https://www.jiguang.cn
 

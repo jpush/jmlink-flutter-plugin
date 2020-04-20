@@ -3,6 +3,8 @@ package cn.jiguang.jmlink_flutter_plugin;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import io.flutter.Log;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
+import io.flutter.view.FlutterNativeView;
 
 public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
 
@@ -25,21 +28,40 @@ public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
     private static final String jmlink_handler_key  = "jmlink_handler_key";
     private static final String jmlink_getParam_key = "jmlink_getParam_key";
 
+    public static JmlinkFlutterPlugin instance;
     private Context context;
     private MethodChannel channel;
     private WeakReference<Activity> activity;
+    private static Uri myUri;
+    private boolean isSetup = false;
+    private boolean isRegisterHandler = false;
+    private boolean isRegisterDefaultHandler = false;
+
 
     /** Plugin registration. */
     public static void registerWith(PluginRegistry.Registrar registrar) {
+        Log.d(TAG,"registerWith:");
 
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "com.jiguang.jmlink_flutter_plugin");
         channel.setMethodCallHandler(new JmlinkFlutterPlugin(registrar,channel,registrar.activity()));
+
+        registrar.addViewDestroyListener(new PluginRegistry.ViewDestroyListener() {
+            @Override
+            public boolean onViewDestroy(FlutterNativeView view) {
+                instance.isSetup = false;
+                instance.isRegisterHandler = false;
+                instance.isRegisterDefaultHandler = false;
+                return false;
+            }
+        });
     }
 
     private JmlinkFlutterPlugin(PluginRegistry.Registrar registrar, MethodChannel channel, Activity activity){
         this.context = registrar.context();
         this.channel = channel;
         this.activity = new WeakReference<>(activity);
+
+        instance = this;
     }
 
     @Override
@@ -61,9 +83,17 @@ public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
     }
 
 
+    public static void setData(Uri uri) {
+        Log.d(TAG,"setData:" + uri);
+        myUri = uri;
+    }
+
     private void setup(MethodCall call, MethodChannel.Result result) {
         Log.d(TAG,"setup");
         JMLinkAPI.getInstance().init(context);
+
+        JmlinkFlutterPlugin.instance.isSetup = true;
+        scheduleCache();
     }
 
     private void setDebugMode(MethodCall call, MethodChannel.Result result) {
@@ -74,68 +104,112 @@ public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
     }
 
     private void registerJMLinkDefaultHandler(MethodCall call, MethodChannel.Result result) {
-        Log.d(TAG,"registerJMLinkDefaultHandler");
+        Log.d(TAG,"registerJMLinkDefaultHandler：");
 
+        instance.isRegisterDefaultHandler = true;
         JMLinkAPI.getInstance().registerDefault(new JMLinkCallback() {
             @Override
             public void execute(Map<String, String> map, Uri uri) {
+                Log.d(TAG,"registerJMLinkDefaultHandler："+ "map=" + map + ",uri = " + uri);
+
                 HashMap jsonMap = new HashMap();
                 if (map != null) {
                     jsonMap.putAll(map);
                 }
-                channel.invokeMethod("onReceiveJMLinkDefaultHandler",jsonMap);
+
+                runMainThread(jsonMap,null,"onReceiveJMLinkDefaultHandler");
             }
         });
+
+        //router(myUri);
+        scheduleCache();
     }
 
     private void registerJMLinkHandler(MethodCall call, MethodChannel.Result result) {
         Log.d(TAG,"registerJMLinkHandler");
 
+        instance.isRegisterHandler = true;
         final String jmlink_key = (String)getValueByKey(call,jmlink_handler_key);
 
         JMLinkAPI.getInstance().register(jmlink_key, new JMLinkCallback() {
             @Override
             public void execute(Map<String, String> map, Uri uri) {
+                Log.d(TAG,"registerJMLinkHandler："+ "map=" + map + ",uri = " + uri);
 
                 HashMap jsonMap = new HashMap();
                 jsonMap.put(jmlink_handler_key,jmlink_key);
                 if (map != null) {
                     jsonMap.putAll(map);
                 }
-                channel.invokeMethod("onReceiveJMLinkHandler",jsonMap);
+
+                runMainThread(jsonMap,null,"onReceiveJMLinkHandler");
             }
         });
-
-
-        JMLinkAPI.getInstance().deferredRouter();
-
-        if (activity.get() != null) {
-            Uri uri = activity.get().getIntent().getData();
-            if (uri != null) {//uri不为null，表示应用是从scheme拉起
-                JMLinkAPI.getInstance().router(uri);
-            }else {
-                JMLinkAPI.getInstance().checkYYB( new YYBCallback() {
-                    @Override
-                    public void onFailed() {
-
-                    }
-
-                    @Override
-                    public void onSuccess() {
-
-                    }
-                });
-            }
-        }
+        //router(myUri);
+        scheduleCache();
     }
 
     private void getJMLinkParam(MethodCall call, MethodChannel.Result result) {
         Log.d(TAG,"getJMLinkParam");
 
         Map object = JMLinkAPI.getInstance().getParams();
-        result.success(object);
+
+        runMainThread(object, result,null);
     }
 
+    public void scheduleCache() {
+        Log.d(TAG, "scheduleCache ");
+        if (instance.isSetup) {
+            Log.d(TAG, "scheduleCache - " + "handler="+instance.isRegisterHandler + "，defaultHandler=" + instance.isRegisterDefaultHandler);
+            if (!instance.isRegisterHandler && !instance.isRegisterDefaultHandler) {
+                return;
+            }
+            if (myUri != null) {
+                router(myUri);
+            }
+        }
+    }
+
+    private void router(Uri uri) {
+        Log.d(TAG,"router:" + uri);
+
+        JMLinkAPI.getInstance().deferredRouter();
+        if (uri != null) {//uri不为null，表示应用是从scheme拉起
+            JMLinkAPI.getInstance().router(uri);
+            myUri = null;
+        }else {
+            JMLinkAPI.getInstance().checkYYB( new YYBCallback() {
+                @Override
+                public void onFailed() {
+                    Log.d(TAG,"router - " + "checkYYB - onFailed");
+                }
+
+                @Override
+                public void onSuccess() {
+                    Log.d(TAG,"router - " + "checkYYB - onSuccess");
+                }
+            });
+        }
+    }
+
+
+    // 主线程再返回数据
+    private void runMainThread(final Map<String,Object> map, final MethodChannel.Result result, final String method) {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (result != null && method == null) {
+                    result.success(map);
+                }else if (method != null){
+                    channel.invokeMethod(method,map);
+                }else {
+
+                }
+
+            }
+        });
+    }
 
 
     private Object valueForKey(Map para,String key){
