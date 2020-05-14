@@ -49,6 +49,8 @@ static NSString *jmlink_getParam_key = @"jmlink_getParam_key";
     NSString *channel = arguments[@"channel"];
     NSNumber *useIDFA = arguments[@"useIDFA"];
     NSNumber *isProduction = arguments[@"isProduction"];
+    NSNumber *debug = arguments[@"debug"];
+    NSNumber *clipboardEnable = arguments[@"clipboardEnable"];
     
     JMLinkConfig *config = [[JMLinkConfig alloc] init];
     if (![appKey isKindOfClass:[NSNull class]]) {
@@ -67,6 +69,12 @@ static NSString *jmlink_getParam_key = @"jmlink_getParam_key";
     }
     config.isProduction = (BOOL)isProduction;
     [JMLinkService setupWithConfig:config];
+    if (debug) {
+        [JMLinkService setDebug:(BOOL)debug];
+    }
+    if (clipboardEnable) {
+        [JMLinkService pasteBoardEnable:(BOOL)clipboardEnable];
+    }
     
     self.isSetup = YES;
     [self scheduleCache];

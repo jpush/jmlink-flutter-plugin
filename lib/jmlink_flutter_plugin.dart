@@ -105,6 +105,7 @@ class JmlinkFlutterPlugin {
     _methodChannel.invokeMethod("setup",config.toMap());
   }
 
+  /// 过期方法，请在 【setup】方法中设置
   /// 设置 SDK 是否 debug 模式
   void setDebugMode({@required bool debug}) {
     print(flutterLog + "setDebugMode");
@@ -146,6 +147,8 @@ class JMLConfig {
   String channel = ""; // channel 发布渠道. 可选，默认为空
   bool useIDFA = false; // only iOS， advertisingIdentifier 广告标识符（IDFA). 可选，默认为空
   bool isProduction = false; //isProduction 是否生产环境. 如果为开发状态,设置为NO;如果为生产状态,应改为YES.可选，默认为NO
+  bool debug = false;//设置日志debug级别，可以查看更多日志
+  bool clipboardEnable = true; // 是否启用剪切板，启用剪切板会大大增加场景还原成功率
 
 
   JMLConfig() {
@@ -156,7 +159,9 @@ class JMLConfig {
       : appKey = json['appKey'],
         channel = json['channel'],
         useIDFA = json['useIDFA'],
-        isProduction = json['isProduction'];
+        isProduction = json['isProduction'],
+        debug = json['debug'],
+        clipboardEnable = json['clipboardEnable'];
 
 
   Map toMap() {
@@ -164,7 +169,9 @@ class JMLConfig {
       'appKey': appKey ??= null,
       'channel': channel ??= "",
       'useIDFA': useIDFA ??= false,
-      'isProduction' : isProduction  ??= false
+      'isProduction' : isProduction  ??= false,
+      'debug' : debug ??= false,
+      'clipboardEnable' : clipboardEnable ??= true,
     }..removeWhere((key, value) => value == null);
   }
 }
