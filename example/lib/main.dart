@@ -35,9 +35,9 @@ class _MyAppState extends State<MyApp> {
     config.channel = "devloper-default";// 初始化sdk,  appKey 和 channel 只对ios设置有效
     config.useIDFA = false;
     config.isProduction = true;
+    config.debug = true;
 
 
-    jmlink.setDebugMode(debug: true);
     jmlink.setup(config: config);
 
     _registerDefaultJMLinkHandler();

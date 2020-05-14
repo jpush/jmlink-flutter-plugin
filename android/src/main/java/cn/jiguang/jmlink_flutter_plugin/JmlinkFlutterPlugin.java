@@ -6,12 +6,15 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 
+import org.json.JSONObject;
+
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
 import cn.jiguang.jmlinksdk.api.JMLinkAPI;
 import cn.jiguang.jmlinksdk.api.JMLinkCallback;
+import cn.jiguang.jmlinksdk.api.ReplayCallback;
 import cn.jiguang.jmlinksdk.api.YYBCallback;
 import io.flutter.Log;
 import io.flutter.plugin.common.MethodCall;
@@ -86,11 +89,30 @@ public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
     public static void setData(Uri uri) {
         Log.d(TAG,"setData:" + uri);
         myUri = uri;
+        scheduleCache();
     }
 
     private void setup(MethodCall call, MethodChannel.Result result) {
-        Log.d(TAG,"setup");
+        Log.d(TAG,"setup:" + call.arguments.toString());
+
+        HashMap<String, Object> map = call.arguments();
+
+
+        //初始化SDK
         JMLinkAPI.getInstance().init(context);
+
+        //设置Debug
+        Object debug = getValueByKey(call,"debug");
+        if (debug != null) {
+            //JMLinkAPI.getInstance().setDebugMode((boolean)debug);
+        }
+        JMLinkAPI.getInstance().setDebugMode(true);
+
+        //设置剪切板
+        Object clipboardEnable = getValueByKey(call,"clipboardEnable");
+        if (clipboardEnable != null) {
+            JMLinkAPI.getInstance().enabledClip((boolean)clipboardEnable);
+        }
 
         JmlinkFlutterPlugin.instance.isSetup = true;
         scheduleCache();
@@ -157,38 +179,51 @@ public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
         runMainThread(object, result,null);
     }
 
-    public void scheduleCache() {
+    public static void scheduleCache() {
         Log.d(TAG, "scheduleCache ");
+        if (instance == null) {
+            return;
+        }
         if (instance.isSetup) {
             Log.d(TAG, "scheduleCache - " + "handler="+instance.isRegisterHandler + "，defaultHandler=" + instance.isRegisterDefaultHandler);
             if (!instance.isRegisterHandler && !instance.isRegisterDefaultHandler) {
                 return;
             }
-            if (myUri != null) {
-                router(myUri);
-            }
+            //if (myUri != null) { }
+            router(myUri);
         }
     }
 
-    private void router(Uri uri) {
+    private static void router(Uri uri) {
         Log.d(TAG,"router:" + uri);
 
-        JMLinkAPI.getInstance().deferredRouter();
+        //JMLinkAPI.getInstance().deferredRouter();
         if (uri != null) {//uri不为null，表示应用是从scheme拉起
             JMLinkAPI.getInstance().router(uri);
             myUri = null;
         }else {
-            JMLinkAPI.getInstance().checkYYB( new YYBCallback() {
+            JMLinkAPI.getInstance().replay(new ReplayCallback() {
                 @Override
                 public void onFailed() {
-                    Log.d(TAG,"router - " + "checkYYB - onFailed");
+
                 }
 
                 @Override
                 public void onSuccess() {
-                    Log.d(TAG,"router - " + "checkYYB - onSuccess");
+
                 }
             });
+//            JMLinkAPI.getInstance().checkYYB( new YYBCallback() {
+//                @Override
+//                public void onFailed() {
+//                    Log.d(TAG,"router - " + "checkYYB - onFailed");
+//                }
+//
+//                @Override
+//                public void onSuccess() {
+//                    Log.d(TAG,"router - " + "checkYYB - onSuccess");
+//                }
+//            });
         }
     }
 
