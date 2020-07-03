@@ -1,6 +1,6 @@
 PODS:
   - Flutter (1.0.0)
-  - JCore (2.2.5)
+  - JCore (2.3.0)
   - JMLink (1.1.0):
     - JCore (< 3.0.0, >= 2.0.0)
   - jmlink_flutter_plugin (0.0.1):
@@ -24,10 +24,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  JCore: d75c0306dc99875d323d23e5a063b3a3ef22335a
-  JMLink: 2b62691f0536a6c16843908f3d3e67fc884137cf
+  JCore: 7fb83e1e75e00df37e9e1e33f3adae79182ad57c
+  JMLink: cfc789faa60d1a5e8c8077d875c9476e61845e08
   jmlink_flutter_plugin: b642a1088b6aadf3af58420b6ce2ec780831a644
 
 PODFILE CHECKSUM: 97075bfa47a1479d429ef7d378fe797f87577faf
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.3
