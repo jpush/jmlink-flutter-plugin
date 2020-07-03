@@ -10,5 +10,6 @@
 @property(nonatomic, assign) BOOL isRegisterDefaultHandler;
 @property(nonatomic, strong) NSURL *cacheOpenUrl;
 @property(nonatomic, strong) NSUserActivity *cacheUserActivity;
+@property(nonatomic, assign) BOOL isCacheActive;
 
 @end

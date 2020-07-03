@@ -77,6 +77,12 @@ static NSString *jmlink_getParam_key = @"jmlink_getParam_key";
     }
     
     self.isSetup = YES;
+    if (self.isCacheActive) {
+        self.isCacheActive = NO;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationDidBecomeActiveNotification object:nil];
+        });
+    }
     [self scheduleCache];
 }
 
@@ -133,7 +139,7 @@ static NSString *jmlink_getParam_key = @"jmlink_getParam_key";
 - (void)getMLinkParam:(FlutterMethodCall *)call result:(FlutterResult)result {
     JMLog(@"getMLinkParam: %@",call.arguments);
     
-    NSString *paramKey = @"";//SDK 的这个参数没用，所以直接传空
+    NSString *paramKey = nil;//SDK 的这个参数没用，所以直接传空
     [JMLinkService getMLinkParam:paramKey handler:^(NSDictionary * _Nullable params) {
         JMLog(@"getMLinkParam callback: %@",params);
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -165,7 +171,13 @@ static NSString *jmlink_getParam_key = @"jmlink_getParam_key";
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     return YES;
 }
-
+-(void)applicationDidBecomeActive:(UIApplication *)application {
+    JMLog(@"applicationDidBecomeActive:");
+    if (!self.isSetup) {
+        JMLog(@"is not setup");
+        self.isCacheActive = YES;
+    }
+}
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     JMLog(@"application:handleOpenURL:");
     if (self.isSetup) {

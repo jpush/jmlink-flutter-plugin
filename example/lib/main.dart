@@ -40,46 +40,29 @@ class _MyAppState extends State<MyApp> {
 
     jmlink.setup(config: config);
 
-    _registerDefaultJMLinkHandler();
-    _registerJMLinkHandler();
+    registerDefaultJMLinkHandler();
 
     if (!mounted) return;
 
   }
 
   // 注册默认的 handler
-  _registerDefaultJMLinkHandler() {
+  registerDefaultJMLinkHandler() {
     // 监听默认的 mLink handler 回调
     jmlink.addDefaultHandlerListener((Map jsonMap){
       print("监听到默认短链的 mLink handler 回调，回调参数为：${jsonMap.toString()}");
       setState(() {
         _defaultMlinkMapString = jsonMap.toString();
       });
+      getJMLinkParam();
     });
     // 注册默认的 handler
     jmlink.registerJMLinkDefaultHandler();
   }
 
-  // 注册短链对应的 handler
-  _registerJMLinkHandler() {
-    // 监听 某个短链 mLink handler 回调
-    String jmlinkKey = "jm_key1";// 短链 key
-    jmlink.addHandlerListener(jmlinkKey, (String key, Map jsonMap){
-      if (jmlinkKey == key) {
-        print("监听到短链为【$jmlinkKey】的 mLink handler 回调，回调参数为：${jsonMap.toString()}");
-        setState(() {
-          _milinkMapString = jsonMap.toString();
-        });
-
-        _getJMLinkParam();
-      }
-    });
-    // 注册短链对应的 handler
-    jmlink.registerJMLinkHandler(key: jmlinkKey);
-  }
 
   // 获取无码邀请返回参数
-  _getJMLinkParam(){
+  getJMLinkParam(){
     jmlink.getJMLinkParam().then((param){
       print("获取到无码邀请参数为： ${param.toString()}");
       setState(() {
@@ -87,6 +70,7 @@ class _MyAppState extends State<MyApp> {
       });
     });
   }
+
 
 
   @override
