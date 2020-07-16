@@ -1,11 +1,11 @@
 PODS:
   - Flutter (1.0.0)
   - JCore (2.3.0)
-  - JMLink (1.1.0):
+  - JMLink (1.2.0):
     - JCore (< 3.0.0, >= 2.0.0)
   - jmlink_flutter_plugin (0.0.1):
     - Flutter
-    - JMLink
+    - JMLink (= 1.2.0)
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
@@ -25,8 +25,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   JCore: 7fb83e1e75e00df37e9e1e33f3adae79182ad57c
-  JMLink: cfc789faa60d1a5e8c8077d875c9476e61845e08
-  jmlink_flutter_plugin: b642a1088b6aadf3af58420b6ce2ec780831a644
+  JMLink: e8250e01a5225e14535804b7d256db326907a5e6
+  jmlink_flutter_plugin: 92746bb3d128a81599ee353e8d81e1c854b74fa9
 
 PODFILE CHECKSUM: 97075bfa47a1479d429ef7d378fe797f87577faf
 

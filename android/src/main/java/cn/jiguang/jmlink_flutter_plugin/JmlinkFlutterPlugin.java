@@ -104,9 +104,8 @@ public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
         //设置Debug
         Object debug = getValueByKey(call,"debug");
         if (debug != null) {
-            //JMLinkAPI.getInstance().setDebugMode((boolean)debug);
+            JMLinkAPI.getInstance().setDebugMode((boolean)debug);
         }
-        JMLinkAPI.getInstance().setDebugMode(true);
 
         //设置剪切板
         Object clipboardEnable = getValueByKey(call,"clipboardEnable");
