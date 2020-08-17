@@ -25,7 +25,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>jmessagesdk123</string>
+				<string>jmessage</string>
 			</array>
 		</dict>
 	</array>

@@ -31,7 +31,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> initPlatformState() async {
 
     JMLConfig config = new JMLConfig();
-    config.appKey = "你自己应用的 AppKey";
+    config.appKey = "e58a32cb3e4469ebf31867e5";
     config.channel = "devloper-default";// 初始化sdk,  appKey 和 channel 只对ios设置有效
     config.useIDFA = false;
     config.isProduction = true;
@@ -46,7 +46,7 @@ class _MyAppState extends State<MyApp> {
 
   }
 
-  // 注册默认的 handler
+  /// 注册默认的 handler
   registerDefaultJMLinkHandler() {
     // 监听默认的 mLink handler 回调
     jmlink.addDefaultHandlerListener((Map jsonMap){
@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
   }
 
 
-  // 获取无码邀请返回参数
+  /// 获取无码邀请返回参数
   getJMLinkParam(){
     jmlink.getJMLinkParam().then((param){
       print("获取到无码邀请参数为： ${param.toString()}");
