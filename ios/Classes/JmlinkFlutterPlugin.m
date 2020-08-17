@@ -187,8 +187,17 @@ static NSString *jmlink_getParam_key = @"jmlink_getParam_key";
         return YES;
     }
 }
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    JMLog(@"application:openURL:options:");
+    if (self.isSetup) {
+        return [JMLinkService routeMLink:url];
+    }else{
+        self.cacheOpenUrl = url;
+        return YES;
+    }
+}
 
-- (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler {
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler {
     JMLog(@"application:continueUserActivity:");
     if (self.isSetup) {
         return [JMLinkService continueUserActivity:userActivity];

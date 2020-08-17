@@ -39,7 +39,7 @@ class JmlinkFlutterPlugin {
   // 私有构造函数
   JmlinkFlutterPlugin._internal(MethodChannel channel) : _methodChannel = channel;
 
-  // 静态、同步、私有访问点
+  /// 静态、同步、私有访问点
   static JmlinkFlutterPlugin _getInstance() {
     if (_instance == null) {
       _instance = new JmlinkFlutterPlugin._internal(
@@ -69,6 +69,7 @@ class JmlinkFlutterPlugin {
     _eventHanders.handlerMap[jmlinkKey] = list;
   }
 
+  /// 监听回调方法
   Future<void> _handlerMethod(MethodCall call) async {
     print(flutterLog + "handleMethod method = ${call.method}");
     switch (call.method) {
@@ -81,13 +82,13 @@ class JmlinkFlutterPlugin {
       break;
       case 'onReceiveJMLinkHandler': {
         Map jsonMap = call.arguments.cast<dynamic, dynamic>();
-        String jmlink_key = jsonMap[jmlink_handler_key];
-        bool isContains = _eventHanders.handlerMap.containsKey(jmlink_key);
+        String jmlinkKey = jsonMap[jmlink_handler_key];
+        bool isContains = _eventHanders.handlerMap.containsKey(jmlinkKey);
         if (isContains) {
           jsonMap.remove(jmlink_handler_key);
-          List<JMLHandlerListener> list = _eventHanders.handlerMap[jmlink_key];
+          List<JMLHandlerListener> list = _eventHanders.handlerMap[jmlinkKey];
           for (JMLHandlerListener cb in list) {
-            cb(jmlink_key,jsonMap);
+            cb(jmlinkKey,jsonMap);
           }
         }
       }
