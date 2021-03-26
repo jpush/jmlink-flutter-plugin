@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import cn.jiguang.jmlink_flutter_plugin.JmlinkFlutterPlugin;
-import io.flutter.app.FlutterActivity;
 
 public class WelcomeActivity extends Activity {
 
