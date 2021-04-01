@@ -9,7 +9,7 @@
 ```yaml
 //pub 集成
 dependencies:
-  jmlink_flutter_plugin: 1.0.8
+  jmlink_flutter_plugin: 2.0.1
 
   
 //github 集成  
