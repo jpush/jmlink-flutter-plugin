@@ -17,83 +17,77 @@ import cn.jiguang.jmlinksdk.api.JMLinkCallback;
 import cn.jiguang.jmlinksdk.api.ReplayCallback;
 import cn.jiguang.jmlinksdk.api.YYBCallback;
 import io.flutter.Log;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.view.FlutterNativeView;
 
-public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
+public class JmlinkFlutterPlugin implements FlutterPlugin, MethodChannel.MethodCallHandler {
 
     // 定义日志 TAG
-    private  static final String TAG = "| JML | Android | -";
+    private static final String TAG = "| JML | Android | -";
 
 
-    private static final String jmlink_handler_key  = "jmlink_handler_key";
+    private static final String jmlink_handler_key = "jmlink_handler_key";
     private static final String jmlink_getParam_key = "jmlink_getParam_key";
 
     public static JmlinkFlutterPlugin instance;
     private Context context;
     private MethodChannel channel;
-    private WeakReference<Activity> activity;
     private static Uri myUri;
     private boolean isSetup = false;
     private boolean isRegisterHandler = false;
     private boolean isRegisterDefaultHandler = false;
 
 
-    /** Plugin registration. */
-    public static void registerWith(PluginRegistry.Registrar registrar) {
-        Log.d(TAG,"registerWith:");
-
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), "com.jiguang.jmlink_flutter_plugin");
-        channel.setMethodCallHandler(new JmlinkFlutterPlugin(registrar,channel,registrar.activity()));
-
-        registrar.addViewDestroyListener(new PluginRegistry.ViewDestroyListener() {
-            @Override
-            public boolean onViewDestroy(FlutterNativeView view) {
-                instance.isSetup = false;
-                instance.isRegisterHandler = false;
-                instance.isRegisterDefaultHandler = false;
-                return false;
-            }
-        });
+    @Override
+    public void onAttachedToEngine(FlutterPluginBinding flutterPluginBinding) {
+        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "com.jiguang.jmlink_flutter_plugin");
+        channel.setMethodCallHandler(this);
+        context = flutterPluginBinding.getApplicationContext();
     }
 
-    private JmlinkFlutterPlugin(PluginRegistry.Registrar registrar, MethodChannel channel, Activity activity){
-        this.context = registrar.context();
-        this.channel = channel;
-        this.activity = new WeakReference<>(activity);
 
+    @Override
+    public void onDetachedFromEngine(FlutterPluginBinding binding) {
+        channel.setMethodCallHandler(null);
+        instance.isSetup = false;
+        instance.isRegisterHandler = false;
+        instance.isRegisterDefaultHandler = false;
+    }
+
+    public JmlinkFlutterPlugin() {
         instance = this;
     }
 
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-        Log.d(TAG,"onMethodCall:" + call.method);
+        Log.d(TAG, "onMethodCall:" + call.method);
         if (call.method.equals("setup")) {
-            setup(call,result);
-        }else if (call.method.equals("setDebugMode")) {
-            setDebugMode(call,result);
-        }else if (call.method.equals("registerJMLinkDefaultHandler")) {
-            registerJMLinkDefaultHandler(call,result);
-        }else if (call.method.equals("registerJMLinkHandler")) {
-            registerJMLinkHandler(call,result);
-        }else if (call.method.equals("getJMLinkParam")) {
-            getJMLinkParam(call,result);
-        }else {
+            setup(call, result);
+        } else if (call.method.equals("setDebugMode")) {
+            setDebugMode(call, result);
+        } else if (call.method.equals("registerJMLinkDefaultHandler")) {
+            registerJMLinkDefaultHandler(call, result);
+        } else if (call.method.equals("registerJMLinkHandler")) {
+            registerJMLinkHandler(call, result);
+        } else if (call.method.equals("getJMLinkParam")) {
+            getJMLinkParam(call, result);
+        } else {
             result.notImplemented();
         }
     }
 
 
     public static void setData(Uri uri) {
-        Log.d(TAG,"setData:" + uri);
+        Log.d(TAG, "setData:" + uri);
         myUri = uri;
         scheduleCache();
     }
 
     private void setup(MethodCall call, MethodChannel.Result result) {
-        Log.d(TAG,"setup:" + call.arguments.toString());
+        Log.d(TAG, "setup:" + call.arguments.toString());
 
         HashMap<String, Object> map = call.arguments();
 
@@ -102,15 +96,15 @@ public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
         JMLinkAPI.getInstance().init(context);
 
         //设置Debug
-        Object debug = getValueByKey(call,"debug");
+        Object debug = getValueByKey(call, "debug");
         if (debug != null) {
-            JMLinkAPI.getInstance().setDebugMode((boolean)debug);
+            JMLinkAPI.getInstance().setDebugMode((boolean) debug);
         }
 
         //设置剪切板
-        Object clipboardEnable = getValueByKey(call,"clipboardEnable");
+        Object clipboardEnable = getValueByKey(call, "clipboardEnable");
         if (clipboardEnable != null) {
-            JMLinkAPI.getInstance().enabledClip((boolean)clipboardEnable);
+            JMLinkAPI.getInstance().enabledClip((boolean) clipboardEnable);
         }
 
         JmlinkFlutterPlugin.instance.isSetup = true;
@@ -118,27 +112,27 @@ public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
     }
 
     private void setDebugMode(MethodCall call, MethodChannel.Result result) {
-        Log.d(TAG,"setDebugMode");
+        Log.d(TAG, "setDebugMode");
 
-        Object enable = getValueByKey(call,"debug");
-        JMLinkAPI.getInstance().setDebugMode((boolean)enable);
+        Object enable = getValueByKey(call, "debug");
+        JMLinkAPI.getInstance().setDebugMode((boolean) enable);
     }
 
     private void registerJMLinkDefaultHandler(MethodCall call, MethodChannel.Result result) {
-        Log.d(TAG,"registerJMLinkDefaultHandler：");
+        Log.d(TAG, "registerJMLinkDefaultHandler：");
 
         instance.isRegisterDefaultHandler = true;
         JMLinkAPI.getInstance().registerDefault(new JMLinkCallback() {
             @Override
             public void execute(Map<String, String> map, Uri uri) {
-                Log.d(TAG,"registerJMLinkDefaultHandler："+ "map=" + map + ",uri = " + uri);
+                Log.d(TAG, "registerJMLinkDefaultHandler：" + "map=" + map + ",uri = " + uri);
 
                 HashMap jsonMap = new HashMap();
                 if (map != null) {
                     jsonMap.putAll(map);
                 }
 
-                runMainThread(jsonMap,null,"onReceiveJMLinkDefaultHandler");
+                runMainThread(jsonMap, null, "onReceiveJMLinkDefaultHandler");
             }
         });
 
@@ -147,23 +141,23 @@ public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
     }
 
     private void registerJMLinkHandler(MethodCall call, MethodChannel.Result result) {
-        Log.d(TAG,"registerJMLinkHandler");
+        Log.d(TAG, "registerJMLinkHandler");
 
         instance.isRegisterHandler = true;
-        final String jmlink_key = (String)getValueByKey(call,jmlink_handler_key);
+        final String jmlink_key = (String) getValueByKey(call, jmlink_handler_key);
 
         JMLinkAPI.getInstance().register(jmlink_key, new JMLinkCallback() {
             @Override
             public void execute(Map<String, String> map, Uri uri) {
-                Log.d(TAG,"registerJMLinkHandler："+ "map=" + map + ",uri = " + uri);
+                Log.d(TAG, "registerJMLinkHandler：" + "map=" + map + ",uri = " + uri);
 
                 HashMap jsonMap = new HashMap();
-                jsonMap.put(jmlink_handler_key,jmlink_key);
+                jsonMap.put(jmlink_handler_key, jmlink_key);
                 if (map != null) {
                     jsonMap.putAll(map);
                 }
 
-                runMainThread(jsonMap,null,"onReceiveJMLinkHandler");
+                runMainThread(jsonMap, null, "onReceiveJMLinkHandler");
             }
         });
         //router(myUri);
@@ -171,11 +165,11 @@ public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
     }
 
     private void getJMLinkParam(MethodCall call, MethodChannel.Result result) {
-        Log.d(TAG,"getJMLinkParam");
+        Log.d(TAG, "getJMLinkParam");
 
         Map object = JMLinkAPI.getInstance().getParams();
 
-        runMainThread(object, result,null);
+        runMainThread(object, result, null);
     }
 
     public static void scheduleCache() {
@@ -184,7 +178,7 @@ public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
             return;
         }
         if (instance.isSetup) {
-            Log.d(TAG, "scheduleCache - " + "handler="+instance.isRegisterHandler + "，defaultHandler=" + instance.isRegisterDefaultHandler);
+            Log.d(TAG, "scheduleCache - " + "handler=" + instance.isRegisterHandler + "，defaultHandler=" + instance.isRegisterDefaultHandler);
             if (!instance.isRegisterHandler && !instance.isRegisterDefaultHandler) {
                 return;
             }
@@ -194,13 +188,13 @@ public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
     }
 
     private static void router(Uri uri) {
-        Log.d(TAG,"router:" + uri);
+        Log.d(TAG, "router:" + uri);
 
         //JMLinkAPI.getInstance().deferredRouter();
         if (uri != null) {//uri不为null，表示应用是从scheme拉起
             JMLinkAPI.getInstance().router(uri);
             myUri = null;
-        }else {
+        } else {
             JMLinkAPI.getInstance().replay(new ReplayCallback() {
                 @Override
                 public void onFailed() {
@@ -228,16 +222,16 @@ public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
 
 
     // 主线程再返回数据
-    private void runMainThread(final Map<String,Object> map, final MethodChannel.Result result, final String method) {
+    private void runMainThread(final Map<String, Object> map, final MethodChannel.Result result, final String method) {
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             @Override
             public void run() {
                 if (result != null && method == null) {
                     result.success(map);
-                }else if (method != null){
-                    channel.invokeMethod(method,map);
-                }else {
+                } else if (method != null) {
+                    channel.invokeMethod(method, map);
+                } else {
 
                 }
 
@@ -246,18 +240,18 @@ public class JmlinkFlutterPlugin implements MethodChannel.MethodCallHandler {
     }
 
 
-    private Object valueForKey(Map para,String key){
-        if (para != null && para.containsKey(key)){
-            return  para.get(key);
-        }else {
+    private Object valueForKey(Map para, String key) {
+        if (para != null && para.containsKey(key)) {
+            return para.get(key);
+        } else {
             return null;
         }
     }
 
-    private Object getValueByKey(MethodCall call,String key){
-        if (call != null && call.hasArgument(key)){
-            return  call.argument(key);
-        }else {
+    private Object getValueByKey(MethodCall call, String key) {
+        if (call != null && call.hasArgument(key)) {
+            return call.argument(key);
+        } else {
             return null;
         }
     }
