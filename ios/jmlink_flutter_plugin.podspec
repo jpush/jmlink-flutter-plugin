@@ -15,9 +15,9 @@ A new Flutter plugin.
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'JMLink','1.2.0'
+  s.dependency 'JMLink','1.2.4'
 
-  # 使用 use_frameworks!，
+  # 使用 use_frameworks!
   s.static_framework = true
 
   s.ios.deployment_target = '8.0'
