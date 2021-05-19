@@ -4,6 +4,7 @@ version '1.0-SNAPSHOT'
 buildscript {
     ext.kotlin_version = '1.2.71'
     repositories {
+        mavenCentral()
         google()
         jcenter()
     }
@@ -15,6 +16,7 @@ buildscript {
 
 rootProject.allprojects {
     repositories {
+        mavenCentral()
         google()
         jcenter()
     }
@@ -36,6 +38,6 @@ android {
 }
 
 dependencies {
-    implementation 'cn.jiguang.sdk:jmlink:1.2.0'
-    implementation 'cn.jiguang.sdk:jcore:2.3.4'
+    implementation 'cn.jiguang.sdk:jmlink:1.2.4'
+    implementation 'cn.jiguang.sdk:jcore:2.7.8'
 }
