@@ -1,6 +1,6 @@
 name: jmlink_flutter_plugin
 description: JIGUANG officially supported JMLink Flutter plugin (Android & iOS)。 https://docs.jiguang.cn
-version: 2.0.7
+version: 2.1.0
 # author: xudong.rao <xudong.rao@outlook.com>
 homepage: https://www.jiguang.cn
 
@@ -10,10 +10,6 @@ environment:
 
 dependencies:
   flutter:
-    sdk: flutter
-
-dev_dependencies:
-  flutter_test:
     sdk: flutter
 
 # For information on the generic Dart part of this file, see the
