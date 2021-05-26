@@ -39,5 +39,5 @@ android {
 
 dependencies {
     implementation 'cn.jiguang.sdk:jmlink:1.2.4'
-    implementation 'cn.jiguang.sdk:jcore:2.7.8'
+    implementation 'cn.jiguang.sdk:jcore:2.8.2'
 }
