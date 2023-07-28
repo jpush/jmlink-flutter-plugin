@@ -67,13 +67,15 @@ static NSString *jmlink_getParam_key = @"jmlink_getParam_key";
             config.advertisingId = idfaStr;
         }
     }
-    config.isProduction = (BOOL)isProduction;
-    [JMLinkService setupWithConfig:config];
-    if (debug) {
-        [JMLinkService setDebug:(BOOL)debug];
+    if ([isProduction isKindOfClass:[NSNumber class]]) {
+        config.isProduction = [isProduction boolValue];
     }
-    if (clipboardEnable) {
-        [JMLinkService pasteBoardEnable:(BOOL)clipboardEnable];
+    [JMLinkService setupWithConfig:config];
+    if ([debug isKindOfClass:[NSNumber class]]) {
+        [JMLinkService setDebug:[debug boolValue]];
+    }
+    if ([clipboardEnable isKindOfClass:[NSNumber class]]) {
+        [JMLinkService pasteBoardEnable:[clipboardEnable boolValue]];
     }
     
     self.isSetup = YES;
