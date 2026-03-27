@@ -3,7 +3,6 @@
     package="cn.jiguang.jmlink_flutter_plugin_example">
 
     <application
-        android:name="io.flutter.app.FlutterApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="jmlink_flutter_plugin_example">
 
@@ -13,6 +12,7 @@
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
+            android:exported="true"
             android:windowSoftInputMode="adjustResize">
 
 
@@ -36,7 +36,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".WelcomeActivity">
+        <activity android:name=".WelcomeActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

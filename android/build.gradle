@@ -26,8 +26,8 @@ apply plugin: 'com.android.library'
 //apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 28
-    namespace = "cn.jiguang.jmlink_flutter_plugin"|
+    compileSdk 34
+    namespace "cn.jiguang.jmlink_flutter_plugin"
     defaultConfig {
         minSdkVersion 16
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

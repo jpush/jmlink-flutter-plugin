@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter run:*)",
+      "Bash(flutter --version)",
+      "Bash(java:*)",
+      "Bash(flutter doctor:*)"
+    ]
+  }
+}
