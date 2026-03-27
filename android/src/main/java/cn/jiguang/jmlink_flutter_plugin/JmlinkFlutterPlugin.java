@@ -102,10 +102,10 @@ public class JmlinkFlutterPlugin implements FlutterPlugin, MethodChannel.MethodC
         }
 
         //设置剪切板
-        Object clipboardEnable = getValueByKey(call, "clipboardEnable");
-        if (clipboardEnable != null) {
-            JMLinkAPI.getInstance().enabledClip((boolean) clipboardEnable);
-        }
+//        Object clipboardEnable = getValueByKey(call, "clipboardEnable");
+//        if (clipboardEnable != null) {
+//            JMLinkAPI.getInstance().enabledClip((boolean) clipboardEnable);
+//        }
 
         JmlinkFlutterPlugin.instance.isSetup = true;
         scheduleCache();
