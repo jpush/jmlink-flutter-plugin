@@ -27,7 +27,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 28
-
+    namespace = "cn.jiguang.jmlink_flutter_plugin"|
     defaultConfig {
         minSdkVersion 16
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -39,5 +39,5 @@ android {
 
 dependencies {
     implementation 'cn.jiguang.sdk:jmlink:1.3.1'
-    implementation 'cn.jiguang.sdk:jcore:2.8.2'
+    implementation 'cn.jiguang.sdk:jcore:5.1.1'
 }
